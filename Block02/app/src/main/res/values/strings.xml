@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Block02</string>
+    <string name="textView_prompt">Pick an item:</string>
+    <string name="disc">Disc</string>
+    <string name="bowl">Bowl</string>
+    <string name="rice_cooker">Rice Cooker</string>
+    <string name="toastMessage">"You picked: "</string>
+    <string-array name="itemsArray">
+        <item>@string/bowl</item>
+        <item>@string/disc</item>
+        <item>@string/rice_cooker</item>
+    </string-array>
+</resources>

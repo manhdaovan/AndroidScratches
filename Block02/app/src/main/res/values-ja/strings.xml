@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Block02</string>
+    <string name="textView_prompt">１つものを選んで：</string>
+    <string name="disc">お皿</string>
+    <string name="bowl">お碗</string>
+    <string name="rice_cooker">炊飯器</string>
+    <string name="toastMessage">選んだもの：</string>
+</resources>
