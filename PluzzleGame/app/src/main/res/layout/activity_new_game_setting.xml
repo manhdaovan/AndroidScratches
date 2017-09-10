@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100"
+    tools:context="com.manhdaovan.pluzzlegame.NewGameSettingActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:text="@string/select_img"
+        android:textColor="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/imgView_choose_img"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:layout_weight="60"
+        android:src="@drawable/select_image"
+        android:onClick="selectImage" />
+
+    <RadioGroup
+        android:id="@+id/radio_grid_size"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="25">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_grid_size"
+            android:textColor="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/setting_grid_size_3x3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grid_4x4" />
+
+        <RadioButton
+            android:id="@+id/setting_grid_size_4x4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grid_5x5" />
+
+        <RadioButton
+            android:id="@+id/setting_grid_size_5x5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grid_6x6" />
+    </RadioGroup>
+
+
+    <Button
+        android:text="OK"
+        android:id="@+id/btn_setting_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:layout_gravity="center"
+        android:gravity="center"
+        style="@style/ConfirmBtn"/>
+
+</LinearLayout>
