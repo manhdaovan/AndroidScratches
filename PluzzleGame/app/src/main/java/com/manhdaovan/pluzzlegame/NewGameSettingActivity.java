@@ -1,5 +1,6 @@
 package com.manhdaovan.pluzzlegame;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,5 +34,10 @@ public class NewGameSettingActivity extends AppCompatActivity {
 
     public void selectImage(View v){
         Toast.makeText(getApplicationContext(), "Move to select image activity", Toast.LENGTH_LONG).show();
+    }
+
+    public void goToCropImg(View v){
+        Intent goToCropImg = new Intent(this, ImageCroppingActivity.class);
+        startActivity(goToCropImg);
     }
 }
