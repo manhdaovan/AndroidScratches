@@ -65,21 +65,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void displaySavedGame(){
+    private void displaySavedGame() {
         File fileDir = getFilesDir();
         File[] allFiles = fileDir.listFiles();
         List<File> dirs = new ArrayList<>();
         TextView noGameMsg = (TextView) findViewById(R.id.textView_noGameMsg);
 
-        for(File f : allFiles){
+        for (File f : allFiles) {
             Log.e("DIRRR getAbsolutePath", "" + f.getAbsolutePath());
             Log.e("DIRRR isDirectory", "" + f.isDirectory());
-            if(f.isDirectory()) dirs.add(f);
+            if (f.isDirectory()) dirs.add(f);
         }
 
-        if(dirs.size() > 0){
+        if (dirs.size() > 0) {
             noGameMsg.setVisibility(View.GONE);
-        }else{
+        } else {
             noGameMsg.setVisibility(View.VISIBLE);
         }
 

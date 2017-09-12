@@ -12,7 +12,7 @@ import android.support.v7.app.AlertDialog;
  * https://github.com/Yalantis/uCrop/blob/master/sample/src/main/java/com/yalantis/ucrop/sample/BaseActivity.java
  */
 
-public class ImageCroppingBase extends AppCompatActivity{
+public class ImageCroppingBase extends AppCompatActivity {
 
     protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
     protected static final int REQUEST_STORAGE_WRITE_ACCESS_PERMISSION = 102;
