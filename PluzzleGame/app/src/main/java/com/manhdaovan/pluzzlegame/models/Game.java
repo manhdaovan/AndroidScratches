@@ -6,14 +6,14 @@ import android.widget.RelativeLayout;
 
 public class Game {
     private Piece[] pieces;
-    private int numberVertical;
-    private int numberHorizontal;
+    private int numberColumn;
+    private int numberRow;
     private Context context;
     private LinearLayout layout;
 
-    public Game(int _numberVertical, int _numberHorizontal, Piece[] _pieces, LinearLayout _layout) {
-        numberVertical = _numberVertical;
-        numberHorizontal = _numberHorizontal;
+    public Game(int _numberColumn, int _numberRow, Piece[] _pieces, LinearLayout _layout) {
+        numberColumn = _numberColumn;
+        numberRow = _numberRow;
         pieces = _pieces;
         layout = _layout;
     }

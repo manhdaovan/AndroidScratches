@@ -20,81 +20,96 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_grid_size"
+            android:textColor="@android:color/black" />
+
+        <RadioGroup
+            android:paddingLeft="16dp"
+            android:id="@+id/radio_grid_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/setting_grid_size_random"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/grid_random" />
+
+            <RadioButton
+                android:id="@+id/setting_grid_size_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/grid_select_size" />
+
+            <LinearLayout
+                android:id="@+id/pieces_select_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <NumberPicker
+                    android:id="@+id/np_row"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <NumberPicker
+                    android:id="@+id/np_column"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_img"
+            android:textColor="@android:color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="100">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+            <Button
+                android:id="@+id/btn_pick_from_gallery"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:text="@string/select_img"
-                android:textColor="@android:color/black" />
+                android:text="@string/pick_from_gallery" />
 
-            <ImageView
-                android:id="@+id/imgView_choose_img"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="40"
-                android:background="@android:color/white"
-                android:src="@drawable/select_image" />
-
-            <RadioGroup
-                android:id="@+id/radio_grid_size"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="25">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/select_grid_size"
-                    android:textColor="@android:color/black" />
-
-                <RadioButton
-                    android:id="@+id/setting_grid_size_random"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/grid_random" />
-
-                <RadioButton
-                    android:id="@+id/setting_grid_size_select"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/grid_select_size" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <NumberPicker
-                        android:visibility="invisible"
-                        android:id="@+id/np_horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <NumberPicker
-                        android:visibility="invisible"
-                        android:id="@+id/np_vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-            </RadioGroup>
-
+            <Button
+                android:id="@+id/btn_pick_random"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:text="@string/pick_random" />
         </LinearLayout>
 
-    </FrameLayout>
+        <ImageView
+            android:contentDescription="@string/selected_image"
+            android:id="@+id/imgView_choose_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:src="@drawable/select_image" />
+
+    </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

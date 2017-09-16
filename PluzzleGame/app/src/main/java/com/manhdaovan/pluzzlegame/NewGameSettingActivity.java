@@ -1,5 +1,6 @@
 package com.manhdaovan.pluzzlegame;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 // uCrop
@@ -26,12 +27,14 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.manhdaovan.pluzzlegame.utils.Constants;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 
@@ -44,19 +47,13 @@ public class NewGameSettingActivity extends ImageCroppingBase {
 
     private static final String TAG = "SampleActivity";
 
-    private static final int REQUEST_SELECT_PICTURE = 0x01;
-
-    private static final int DEFAULT_COMPRESS_QUALITY = 90;
-    private static final String SAMPLE_CROPPED_IMAGE_NAME = "SampleCropImage";
-
-    private static final String[] horizontalNumPieces = {"3 X", "4 X", "5 X", "6 X", "7 X", "8 X", "9 X", "10 X"};
-    private static final String[] verticalNumPieces = {"3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
-
     // Start here
-    private NumberPicker npHorizontalPieces;
-    private NumberPicker npVerticalPieces;
+    private NumberPicker npRowPieces;
+    private NumberPicker npColumnPieces;
     private RadioGroup rdGridSize;
-    private ImageView selectImg;
+    private ImageView selectedImg;
+
+    private Uri croppedImgUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,15 +70,17 @@ public class NewGameSettingActivity extends ImageCroppingBase {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        npHorizontalPieces = (NumberPicker) findViewById(R.id.np_horizontal);
-        npHorizontalPieces.setDisplayedValues(horizontalNumPieces);
-        npHorizontalPieces.setMinValue(3);
-        npHorizontalPieces.setMaxValue(10);
 
-        npVerticalPieces = (NumberPicker) findViewById(R.id.np_vertical);
-        npVerticalPieces.setDisplayedValues(verticalNumPieces);
-        npVerticalPieces.setMinValue(3);
-        npVerticalPieces.setMaxValue(20);
+
+        npRowPieces = (NumberPicker) findViewById(R.id.np_row);
+        npRowPieces.setDisplayedValues(Constants.ROW_NUM_PIECES);
+        npRowPieces.setMinValue(Constants.ROW_OFFSET);
+        npRowPieces.setMaxValue(Constants.ROW_OFFSET + Constants.ROW_NUM_PIECES.length - 1);
+
+        npColumnPieces = (NumberPicker) findViewById(R.id.np_column);
+        npColumnPieces.setDisplayedValues(Constants.COLUMN_NUM_PIECES);
+        npColumnPieces.setMinValue(Constants.COLUMN_OFFSET);
+        npColumnPieces.setMaxValue(Constants.COLUMN_OFFSET + Constants.COLUMN_NUM_PIECES.length - 1);
 
         rdGridSize = (RadioGroup) findViewById(R.id.radio_grid_size);
         rdGridSize.check(R.id.setting_grid_size_random);
@@ -93,24 +92,32 @@ public class NewGameSettingActivity extends ImageCroppingBase {
                         setDisplayNumberPickers(View.VISIBLE);
                         break;
                     default:
-                        setDisplayNumberPickers(View.INVISIBLE);
+                        setDisplayNumberPickers(View.GONE);
                         break;
                 }
             }
         });
 
-        selectImg = (ImageView) findViewById(R.id.imgView_choose_img);
-        selectImg.setOnClickListener(new View.OnClickListener() {
+        selectedImg = (ImageView) findViewById(R.id.imgView_choose_img);
+
+        findViewById(R.id.btn_pick_from_gallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pickFromGallery();
             }
         });
+
+        findViewById(R.id.btn_pick_random).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickRandom();
+            }
+        });
     }
 
     private void setDisplayNumberPickers(int mode) {
-        npHorizontalPieces.setVisibility(mode);
-        npVerticalPieces.setVisibility(mode);
+        LinearLayout piecesSelectSection = (LinearLayout) findViewById(R.id.pieces_select_section);
+        piecesSelectSection.setVisibility(mode);
     }
 
     @Override
@@ -127,7 +134,15 @@ public class NewGameSettingActivity extends ImageCroppingBase {
                 this.finish();
                 return true;
             case R.id.menu_game_setting_ok:
-                Toast.makeText(getApplicationContext(), "Move to game play", Toast.LENGTH_LONG).show();
+                if (croppedImgUri == null) {
+                    Toast.makeText(NewGameSettingActivity.this, "No selected picture", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent gameSetting = new Intent(NewGameSettingActivity.this, GamePlayActivity.class);
+                    gameSetting.setData(croppedImgUri);
+                    gameSetting.putExtra(Constants.INTENT_ROW_PIECES, npRowPieces.getValue());
+                    gameSetting.putExtra(Constants.INTENT_COLUMN_PIECES, npColumnPieces.getValue());
+                    startActivity(gameSetting);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -136,19 +151,28 @@ public class NewGameSettingActivity extends ImageCroppingBase {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e(TAG, "requestCode: " + requestCode);
+        Log.e(TAG, "resultCode: " + resultCode);
+        Log.e(TAG, "data: " + data);
+
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_SELECT_PICTURE) {
+            if (requestCode == Constants.REQUEST_SELECT_PICTURE) {
                 final Uri selectedUri = data.getData();
+                Log.e(TAG, "selectedUri: " + selectedUri);
                 if (selectedUri != null) {
+                    Log.e(TAG, "selectedUri != null");
                     startCropActivity(data.getData());
                 } else {
+                    Log.e(TAG, "selectedUri == null");
                     Toast.makeText(NewGameSettingActivity.this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
                 }
             } else if (requestCode == UCrop.REQUEST_CROP) {
+                Log.e(TAG, "handleCropResult");
                 handleCropResult(data);
             }
         }
         if (resultCode == UCrop.RESULT_ERROR) {
+            Log.e(TAG, "handleCropError");
             handleCropError(data);
         }
     }
@@ -181,12 +205,22 @@ public class NewGameSettingActivity extends ImageCroppingBase {
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), REQUEST_SELECT_PICTURE);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), Constants.REQUEST_SELECT_PICTURE);
         }
     }
 
+    private void pickRandom() {
+        Random random = new Random();
+        int minSizePixels = 800;
+        int maxSizePixels = 2400;
+        startCropActivity(Uri.parse(String.format(Locale.getDefault(), "https://unsplash.it/%d/%d/?random",
+                minSizePixels + random.nextInt(maxSizePixels - minSizePixels),
+                minSizePixels + random.nextInt(maxSizePixels - minSizePixels))));
+    }
+
     private void startCropActivity(@NonNull Uri uri) {
-        String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME + ".jpg";
+        String fileName = "ABCDEF";
+        String destinationFileName = fileName + ".jpg";
 
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
 
@@ -214,11 +248,15 @@ public class NewGameSettingActivity extends ImageCroppingBase {
      */
     private UCrop advancedConfig(@NonNull UCrop uCrop) {
         UCrop.Options options = new UCrop.Options();
+        Log.e(TAG, options.toString());
 
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        options.setCompressionQuality(90);
+        options.setCompressionFormat(Constants.DEFAULT_IMG_FORMAT);
+        options.setCompressionQuality(Constants.DEFAULT_COMPRESS_QUALITY);
 
         options.setFreeStyleCropEnabled(true);
+
+        options.setCropGridColumnCount(npColumnPieces.getValue());
+        options.setCropGridRowCount(npRowPieces.getValue());
 
         /*
         If you want to configure how gestures work for all UCropActivity tabs
@@ -271,10 +309,11 @@ public class NewGameSettingActivity extends ImageCroppingBase {
     }
 
     private void handleCropResult(@NonNull Intent result) {
-        final Uri resultUri = UCrop.getOutput(result);
-        if (resultUri != null) {
+        croppedImgUri = UCrop.getOutput(result);
+        if (croppedImgUri != null) {
             Toast.makeText(getApplicationContext(), "VKL handleCropResult", Toast.LENGTH_LONG).show();
-//            ResultActivity.startWithUri(ImageCroppingActivity.this, resultUri);
+            selectedImg.setImageDrawable(null); // Force redraw ImageView
+            selectedImg.setImageURI(croppedImgUri);
         } else {
             Toast.makeText(NewGameSettingActivity.this, R.string.toast_cannot_retrieve_cropped_image, Toast.LENGTH_SHORT).show();
         }
