@@ -12,7 +12,19 @@ public class Constants {
     public static final Bitmap.CompressFormat DEFAULT_IMG_FORMAT = Bitmap.CompressFormat.JPEG;
 
     public static final String[] ROW_NUM_PIECES = {"3 X", "4 X", "5 X", "6 X", "7 X", "8 X", "9 X", "10 X"};
+    public static final int DEFAULT_ROW_NUM_PIECES = 4;
     public static final String[] COLUMN_NUM_PIECES = {"3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
+    public static final int DEFAULT_COLUMN_NUM_PIECES = 4;
     public static final int COLUMN_OFFSET = 2;
     public static final int ROW_OFFSET = 2;
+
+    public static final String TMP_FILE_NAME = "cropped_tmp_file";
+    public static final String TMP_FILE_MIME = ".jpg";
+
+    public static final String DEFAULT_FILE_NAME = "cropped_img";
+    public static final String DEFAULT_FILE_MIME = ".jpg";
+
+    public static String defaultCroppedFileName() {
+        return DEFAULT_FILE_NAME + DEFAULT_FILE_MIME;
+    }
 }

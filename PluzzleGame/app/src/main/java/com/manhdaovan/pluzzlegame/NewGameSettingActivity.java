@@ -71,16 +71,17 @@ public class NewGameSettingActivity extends ImageCroppingBase {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
         npRowPieces = (NumberPicker) findViewById(R.id.np_row);
         npRowPieces.setDisplayedValues(Constants.ROW_NUM_PIECES);
         npRowPieces.setMinValue(Constants.ROW_OFFSET);
         npRowPieces.setMaxValue(Constants.ROW_OFFSET + Constants.ROW_NUM_PIECES.length - 1);
+        npRowPieces.setValue(Constants.DEFAULT_ROW_NUM_PIECES);
 
         npColumnPieces = (NumberPicker) findViewById(R.id.np_column);
         npColumnPieces.setDisplayedValues(Constants.COLUMN_NUM_PIECES);
         npColumnPieces.setMinValue(Constants.COLUMN_OFFSET);
         npColumnPieces.setMaxValue(Constants.COLUMN_OFFSET + Constants.COLUMN_NUM_PIECES.length - 1);
+        npColumnPieces.setValue(Constants.DEFAULT_COLUMN_NUM_PIECES);
 
         rdGridSize = (RadioGroup) findViewById(R.id.radio_grid_size);
         rdGridSize.check(R.id.setting_grid_size_random);
@@ -137,11 +138,13 @@ public class NewGameSettingActivity extends ImageCroppingBase {
                 if (croppedImgUri == null) {
                     Toast.makeText(NewGameSettingActivity.this, "No selected picture", Toast.LENGTH_LONG).show();
                 } else {
+                    Log.e(TAG, "croppedImgUri: " + croppedImgUri);
                     Intent gameSetting = new Intent(NewGameSettingActivity.this, GamePlayActivity.class);
                     gameSetting.setData(croppedImgUri);
                     gameSetting.putExtra(Constants.INTENT_ROW_PIECES, npRowPieces.getValue());
                     gameSetting.putExtra(Constants.INTENT_COLUMN_PIECES, npColumnPieces.getValue());
                     startActivity(gameSetting);
+                    this.finish();
                 }
                 return true;
             default:
@@ -219,9 +222,7 @@ public class NewGameSettingActivity extends ImageCroppingBase {
     }
 
     private void startCropActivity(@NonNull Uri uri) {
-        String fileName = "ABCDEF";
-        String destinationFileName = fileName + ".jpg";
-
+        String destinationFileName = Constants.TMP_FILE_NAME + Constants.TMP_FILE_MIME;
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
 
         uCrop = basisConfig(uCrop);

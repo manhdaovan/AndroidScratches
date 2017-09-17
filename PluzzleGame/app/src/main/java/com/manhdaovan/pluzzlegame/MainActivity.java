@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.manhdaovan.pluzzlegame.utils.Utils;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -66,23 +68,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displaySavedGame() {
-        File fileDir = getFilesDir();
-        File[] allFiles = fileDir.listFiles();
-        List<File> dirs = new ArrayList<>();
+        List<File> allFiles = Utils.getDirs(MainActivity.this, Utils.MODE_DIR_ONLY);
         TextView noGameMsg = (TextView) findViewById(R.id.textView_noGameMsg);
 
-        for (File f : allFiles) {
-            Log.e("DIRRR getAbsolutePath", "" + f.getAbsolutePath());
-            Log.e("DIRRR isDirectory", "" + f.isDirectory());
-            if (f.isDirectory()) dirs.add(f);
-        }
-
-        if (dirs.size() > 0) {
+        if (allFiles.size() > 0) {
             noGameMsg.setVisibility(View.GONE);
         } else {
             noGameMsg.setVisibility(View.VISIBLE);
         }
 
-        Log.e("DIRRR", "" + fileDir.getAbsolutePath());
+        Log.e("DIRRR", "" + getFilesDir().getAbsolutePath());
     }
 }
