@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    LinearLayout mainContent;
+    FrameLayout mainContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mainContent = (LinearLayout) findViewById(R.id.layout_main_content);
+        mainContent = (FrameLayout) findViewById(R.id.layout_main_content);
         displaySavedGame();
     }
 
@@ -69,13 +70,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void displaySavedGame() {
         List<File> allFiles = Utils.getDirs(MainActivity.this, Utils.MODE_DIR_ONLY);
-        TextView noGameMsg = (TextView) findViewById(R.id.textView_noGameMsg);
-
-        if (allFiles.size() > 0) {
-            noGameMsg.setVisibility(View.GONE);
-        } else {
-            noGameMsg.setVisibility(View.VISIBLE);
-        }
+//        TextView noGameMsg = (TextView) findViewById(R.id.textView_noGameMsg);
+//
+//        if (allFiles.size() > 0) {
+//            noGameMsg.setVisibility(View.GONE);
+//        } else {
+//            noGameMsg.setVisibility(View.VISIBLE);
+//        }
 
         Log.e("DIRRR", "" + getFilesDir().getAbsolutePath());
     }

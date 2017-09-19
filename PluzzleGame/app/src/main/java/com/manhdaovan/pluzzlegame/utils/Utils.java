@@ -63,14 +63,16 @@ public class Utils {
         try {
             File fileDir = context.getFilesDir();
             File newFolder = new File(fileDir.getAbsolutePath() + "/" + folderName);
-            if(!newFolder.exists() && newFolder.mkdir()){
+
+            if(newFolder.exists() || newFolder.mkdir()){
                 Toast.makeText(context, "Create folder: " + newFolder.toString(), Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Create folder: " + newFolder.toString());
+                return newFolder;
             }else{
                 Toast.makeText(context, "Cannot create folder: " + newFolder.toString(), Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Cannot create folder: " + newFolder.toString());
+                return null;
             }
-            return newFolder;
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -105,8 +107,8 @@ public class Utils {
     }
 
     public static File saveFile(Context context, String targetFolder, String targetFileName, String sourceFile){
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
+        FileInputStream fis;
+        FileOutputStream fos;
 
         try {
             fis = new FileInputStream(new File(sourceFile));
