@@ -12,6 +12,7 @@ import com.manhdaovan.pluzzlegame.utils.Constants;
 import com.manhdaovan.pluzzlegame.utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class GamePlayActivity extends AppCompatActivity {
     private static final String TAG = "GamePlayActivity";
@@ -49,7 +50,13 @@ public class GamePlayActivity extends AppCompatActivity {
 
         Utils.getDirs(GamePlayActivity.this, Utils.MODE_ALL);
 
-        Utils.saveFile(GamePlayActivity.this, gameImgsFolder.getAbsolutePath(), Constants.defaultCroppedFileName(), croppedImgUri.getPath());
+        try {
+            Utils.saveFile(GamePlayActivity.this, gameImgsFolder.getAbsolutePath(), Constants.defaultCroppedFileName(), croppedImgUri.getPath());
+        }catch (IOException e){
+            Log.e(TAG, "DMMMMM " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Cannot saveFile" + gameImgsFolder.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        }
+
         Utils.getAllSubFilesAndFolders(gameImgsFolder);
     }
 

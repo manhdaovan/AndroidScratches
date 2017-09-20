@@ -12,6 +12,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -106,26 +108,33 @@ public class Utils {
         return dirs;
     }
 
-    public static File saveFile(Context context, String targetFolder, String targetFileName, String sourceFile){
-        FileInputStream fis;
-        FileOutputStream fos;
+    public static File saveFile(Context context, String targetFolder, String targetFileName, String sourceFile) throws IOException{
+        FileChannel sourceChannel = null;
+        FileChannel targetChannel = null;
+        File source = new File(sourceFile);
+        File target = new File(targetFolder, targetFileName);
 
         try {
-            fis = new FileInputStream(new File(sourceFile));
-            fos = new FileOutputStream(new File(targetFolder, targetFileName));
-            byte[] buffer = new byte[1024];
+            if(!target.exists()) target.createNewFile();
 
-            while(fis.read(buffer) != -1) fos.write(fis.read(buffer));
+            sourceChannel = new FileInputStream(source).getChannel();
+            targetChannel = new FileOutputStream(target).getChannel();
 
-            fis.close();
-            fos.close();
+            targetChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
 
             Log.e(TAG, "saveFile OK: " + targetFolder + "/" + targetFileName);
-            return new File(targetFolder, targetFileName);
+            return target;
         }catch (Exception e){
             e.printStackTrace();
             Log.e(TAG, "saveFile NOTTTT OK: " + targetFolder + "/" + targetFileName + ":::" + e.getMessage());
             return null;
+        }finally {
+            if (sourceChannel != null) {
+                sourceChannel.close();
+            }
+            if (targetChannel != null) {
+                targetChannel.close();
+            }
         }
     }
 
