@@ -1,6 +1,7 @@
 package com.manhdaovan.pluzzlegame;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import com.manhdaovan.pluzzlegame.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class GamePlayActivity extends AppCompatActivity {
     private static final String TAG = "GamePlayActivity";
@@ -51,13 +53,21 @@ public class GamePlayActivity extends AppCompatActivity {
         Utils.getDirs(GamePlayActivity.this, Utils.MODE_ALL);
 
         try {
-            Utils.saveFile(GamePlayActivity.this, gameImgsFolder.getAbsolutePath(), Constants.defaultCroppedFileName(), croppedImgUri.getPath());
+            File savedImg = Utils.saveFile(GamePlayActivity.this, gameImgsFolder.getAbsolutePath(), Constants.defaultCroppedFileName(), croppedImgUri.getPath());
+            List<Bitmap> pieces = Utils.sliceImg(savedImg.getAbsolutePath(), rowPieces, columnPieces);
+            int imgIdx = 0;
+            for (Bitmap piece: pieces){
+                File pieceFile = new File(gameImgsFolder, Constants.DEFAULT_FILE_NAME + "_" + imgIdx + Constants.DEFAULT_FILE_MIME);
+                Utils.saveFile(GamePlayActivity.this, pieceFile, piece);
+                imgIdx += 1;
+            }
         }catch (IOException e){
             Log.e(TAG, "DMMMMM " + e.getMessage());
             Toast.makeText(getApplicationContext(), "Cannot saveFile" + gameImgsFolder.getAbsolutePath(), Toast.LENGTH_LONG).show();
         }
 
         Utils.getAllSubFilesAndFolders(gameImgsFolder);
+
     }
 
     @Override

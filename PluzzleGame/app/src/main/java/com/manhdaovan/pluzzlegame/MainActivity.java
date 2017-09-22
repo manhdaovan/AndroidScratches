@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
         for (File file: allFiles){
             File savedImg = new File(file.getAbsolutePath(), Constants.defaultCroppedFileName());
+            for(File f: file.listFiles()){
+                allSavedImgs.add(f.getAbsolutePath());
+            }
             if(savedImg.exists()) allSavedImgs.add(savedImg.getAbsolutePath());
         }
 

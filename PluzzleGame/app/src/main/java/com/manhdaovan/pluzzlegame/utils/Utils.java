@@ -2,6 +2,8 @@ package com.manhdaovan.pluzzlegame.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -44,7 +46,7 @@ public class Utils {
 
     @Nullable
     public static MessageDigest uriToMsgDigest(ContentResolver contentResolver, Uri uri){
-        MessageDigest messageDigest = null;
+        MessageDigest messageDigest;
 
         try{
             messageDigest = MessageDigest.getInstance("MD5");
@@ -138,6 +140,28 @@ public class Utils {
         }
     }
 
+    public static File saveFile(Context context, File target,  Bitmap bitmap) throws IOException{
+        FileOutputStream fos = null;
+
+        try {
+            if(!target.exists()) target.createNewFile();
+
+            fos = new FileOutputStream(target);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+            Log.e(TAG, "save piece File OK: " + target.getAbsolutePath());
+            return target;
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e(TAG, "save piece NOTTTT OK: " + target.getAbsolutePath() + ":::" + e.getMessage());
+            return null;
+        }finally {
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+
     public static List<File> getAllSubFilesAndFolders(File parent){
         File[] allFiles = parent.listFiles();
         List<File> results = new ArrayList<>();
@@ -149,5 +173,35 @@ public class Utils {
         }
 
         return results;
+    }
+
+    public static List<Bitmap> sliceImg(String orgImg, int rows, int cols){
+        List<Bitmap> pieces = new ArrayList<>();
+        Bitmap orgImgBitmap = BitmapFactory.decodeFile(orgImg);
+//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(orgImgBitmap, orgImgBitmap.getWidth(), orgImgBitmap.getHeight(), true);
+
+        int pieceHeight = orgImgBitmap.getHeight() / rows;
+        int pieceWidth = orgImgBitmap.getWidth() / cols;
+
+        int yCo = 0;
+
+        for(int x=0; x<rows; x++){
+
+            int xCo = 0;
+
+            for(int y=0; y<cols; y++){
+
+//                pieces.add(Bitmap.createBitmap(scaledBitmap, xCo, yCo, pieceWidth, pieceHeight));
+                pieces.add(Bitmap.createBitmap(orgImgBitmap, xCo, yCo, pieceWidth, pieceHeight));
+
+                xCo += pieceWidth;
+
+            }
+
+            yCo+= pieceHeight;
+
+        }
+
+        return pieces;
     }
 }
