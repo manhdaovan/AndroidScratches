@@ -52,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        displaySavedGame();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displaySavedGame() {
-        List<File> allFiles = Utils.getDirs(MainActivity.this, Utils.MODE_DIR_ONLY);
+        List<File> allFiles = Utils.getDirs(getApplicationContext().getFilesDir(), Utils.MODE_DIR_ONLY);
         List<String> allSavedImgs = new ArrayList<>();
 
         TextView noGameMsg = (TextView) findViewById(R.id.textView_noGameMsg);

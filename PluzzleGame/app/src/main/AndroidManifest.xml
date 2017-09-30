@@ -42,9 +42,6 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".ResultActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".GamePlayActivity"></activity>
     </application>
 

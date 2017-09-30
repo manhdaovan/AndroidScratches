@@ -57,4 +57,5 @@
     <string name="pick_from_gallery">Pick from gallery</string>
     <string name="pick_random">Pick random</string>
     <string name="selected_image">Selected Image</string>
+    <string name="loading">loading</string>
 </resources>

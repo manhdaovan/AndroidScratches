@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_game_setting_ok"
         android:orderInCategory="100"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_done"
         android:title="@string/label_ok"
         />

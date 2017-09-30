@@ -35,10 +35,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.manhdaovan.pluzzlegame.utils.Constants;
+import com.manhdaovan.pluzzlegame.utils.Utils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -136,15 +139,29 @@ public class NewGameSettingActivity extends ImageCroppingBase {
                 return true;
             case R.id.menu_game_setting_ok:
                 if (croppedImgUri == null) {
-                    Toast.makeText(NewGameSettingActivity.this, "No selected picture", Toast.LENGTH_LONG).show();
+                    Utils.alert(this, "No selected picture");
                 } else {
+                    item.setVisible(false);
+                    //TODO: Move initGameResources into async task
                     Log.e(TAG, "croppedImgUri: " + croppedImgUri);
-                    Intent gameSetting = new Intent(NewGameSettingActivity.this, GamePlayActivity.class);
-                    gameSetting.setData(croppedImgUri);
-                    gameSetting.putExtra(Constants.INTENT_ROW_PIECES, npRowPieces.getValue());
-                    gameSetting.putExtra(Constants.INTENT_COLUMN_PIECES, npColumnPieces.getValue());
-                    startActivity(gameSetting);
-                    this.finish();
+                    String resourceFolder;
+
+                    try {
+                        resourceFolder = initGameResources(croppedImgUri, npRowPieces.getValue(), npColumnPieces.getValue());
+                    } catch (Exception e) {
+                        Log.e(TAG, "initGameResources FALSEEEEE: " + e.getMessage());
+                        resourceFolder = null;
+                    }
+
+                    if (resourceFolder != null) {
+                        Intent gameSetting = new Intent(NewGameSettingActivity.this, GamePlayActivity.class);
+                        gameSetting.putExtra(Constants.INTENT_GAME_RESOURCE_FOLDER, resourceFolder);
+                        startActivity(gameSetting);
+                        this.finish();
+                    } else {
+                        Log.e(TAG, "menu_game_setting_ok FALSEEEEE: " + croppedImgUri);
+                    }
+                    item.setVisible(true);
                 }
                 return true;
             default:
@@ -167,7 +184,7 @@ public class NewGameSettingActivity extends ImageCroppingBase {
                     startCropActivity(data.getData());
                 } else {
                     Log.e(TAG, "selectedUri == null");
-                    Toast.makeText(NewGameSettingActivity.this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
+                    Utils.alert(this, getString(R.string.toast_cannot_retrieve_selected_image));
                 }
             } else if (requestCode == UCrop.REQUEST_CROP) {
                 Log.e(TAG, "handleCropResult");
@@ -312,11 +329,11 @@ public class NewGameSettingActivity extends ImageCroppingBase {
     private void handleCropResult(@NonNull Intent result) {
         croppedImgUri = UCrop.getOutput(result);
         if (croppedImgUri != null) {
-            Toast.makeText(getApplicationContext(), "VKL handleCropResult", Toast.LENGTH_LONG).show();
+            Utils.alert(getApplicationContext(), "VKL handleCropResult");
             selectedImg.setImageDrawable(null); // Force redraw ImageView
             selectedImg.setImageURI(croppedImgUri);
         } else {
-            Toast.makeText(NewGameSettingActivity.this, R.string.toast_cannot_retrieve_cropped_image, Toast.LENGTH_SHORT).show();
+            Utils.alert(this, getString(R.string.toast_cannot_retrieve_cropped_image));
         }
     }
 
@@ -325,9 +342,54 @@ public class NewGameSettingActivity extends ImageCroppingBase {
         final Throwable cropError = UCrop.getError(result);
         if (cropError != null) {
             Log.e(TAG, "handleCropError: ", cropError);
-            Toast.makeText(NewGameSettingActivity.this, cropError.getMessage(), Toast.LENGTH_LONG).show();
+            Utils.alert(this, cropError.getMessage());
         } else {
-            Toast.makeText(NewGameSettingActivity.this, R.string.toast_unexpected_error, Toast.LENGTH_SHORT).show();
+            Utils.alert(this, getString(R.string.toast_unexpected_error));
         }
+    }
+
+    private String initGameResources(Uri croppedImgUri, int rowPieces, int columnPieces) {
+        Log.e(TAG, "rowPieces: " + rowPieces + " columnPieces: " + columnPieces);
+
+        if (croppedImgUri == null) {
+            Utils.alert(this, "Cannot fetch image from Game Setting screen");
+            this.finish();
+            return null;
+        }
+
+        String md5File = Utils.uriToMd5(getContentResolver(), croppedImgUri);
+        if (md5File == null) {
+            Utils.alert(this, "Cannot get md5 of image from Game Setting screen");
+            this.finish();
+            return null;
+        }
+
+        File gameImgsFolder = Utils.createFolder(this, md5File);
+        if (gameImgsFolder == null) {
+            Utils.alert(this, "Cannot create folder: " + gameImgsFolder.getAbsolutePath());
+            this.finish();
+            return null;
+        }
+
+        Utils.getDirs(getApplicationContext().getFilesDir(), Utils.MODE_ALL);
+
+        try {
+            File savedImg = Utils.saveFile(this, gameImgsFolder.getAbsolutePath(), Constants.defaultCroppedFileName(), croppedImgUri.getPath());
+            List<Bitmap> pieces = Utils.sliceImg(savedImg.getAbsolutePath(), rowPieces, columnPieces);
+            int imgIdx = Constants.DEFAULT_FIRST_PIECE_INDEX;
+            for (Bitmap piece : pieces) {
+                File pieceFile = new File(gameImgsFolder, Utils.buildPieceName(imgIdx));
+                Utils.saveFile(this, pieceFile, piece);
+                imgIdx += 1;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "DMMMMM " + e.getMessage());
+            Utils.alert(this, "Cannot saveFile" + gameImgsFolder.getAbsolutePath());
+            return null;
+        }
+
+        Utils.getAllSubFilesAndFolders(gameImgsFolder);
+
+        return md5File;
     }
 }

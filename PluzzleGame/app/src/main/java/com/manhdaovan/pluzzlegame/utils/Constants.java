@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 public class Constants {
     public static final String INTENT_COLUMN_PIECES = "column_pieces";
     public static final String INTENT_ROW_PIECES = "row_pieces";
+    public static final String INTENT_GAME_RESOURCE_FOLDER = "game_resource_folder";
 
     public static final int REQUEST_SELECT_PICTURE = 0x01;
 
@@ -23,8 +24,13 @@ public class Constants {
 
     public static final String DEFAULT_FILE_NAME = "cropped_img";
     public static final String DEFAULT_FILE_MIME = ".jpg";
+    public static final int DEFAULT_FIRST_PIECE_INDEX = 0;
 
     public static String defaultCroppedFileName() {
         return DEFAULT_FILE_NAME + DEFAULT_FILE_MIME;
+    }
+
+    public static String defaultFirstPieceName(){
+        return DEFAULT_FILE_NAME + "_" + DEFAULT_FIRST_PIECE_INDEX + DEFAULT_FILE_MIME;
     }
 }

@@ -28,46 +28,8 @@ public class GamePlayActivity extends AppCompatActivity {
         Uri croppedImgUri = gameSetting.getData();
         int rowPieces = gameSetting.getIntExtra(Constants.INTENT_ROW_PIECES, Constants.DEFAULT_ROW_NUM_PIECES);
         int columnPieces = gameSetting.getIntExtra(Constants.INTENT_COLUMN_PIECES, Constants.DEFAULT_COLUMN_NUM_PIECES);
-        Log.e(TAG, "rowPieces: " + rowPieces + " columnPieces: " + columnPieces);
 
-        if (croppedImgUri == null) {
-            Toast.makeText(getApplicationContext(), "Cannot fetch image from Game Setting screen", Toast.LENGTH_LONG).show();
-            this.finish();
-            return;
-        }
-
-        String md5File = Utils.uriToMd5(getContentResolver(), croppedImgUri);
-        if (md5File == null) {
-            Toast.makeText(getApplicationContext(), "Cannot get md5 of image from Game Setting screen", Toast.LENGTH_LONG).show();
-            this.finish();
-            return;
-        }
-
-        File gameImgsFolder = Utils.createFolder(GamePlayActivity.this, md5File);
-        if (gameImgsFolder == null) {
-            Toast.makeText(getApplicationContext(), "Cannot create folder: " + gameImgsFolder.getAbsolutePath(), Toast.LENGTH_LONG).show();
-            this.finish();
-            return;
-        }
-
-        Utils.getDirs(GamePlayActivity.this, Utils.MODE_ALL);
-
-        try {
-            File savedImg = Utils.saveFile(GamePlayActivity.this, gameImgsFolder.getAbsolutePath(), Constants.defaultCroppedFileName(), croppedImgUri.getPath());
-            List<Bitmap> pieces = Utils.sliceImg(savedImg.getAbsolutePath(), rowPieces, columnPieces);
-            int imgIdx = 0;
-            for (Bitmap piece: pieces){
-                File pieceFile = new File(gameImgsFolder, Constants.DEFAULT_FILE_NAME + "_" + imgIdx + Constants.DEFAULT_FILE_MIME);
-                Utils.saveFile(GamePlayActivity.this, pieceFile, piece);
-                imgIdx += 1;
-            }
-        }catch (IOException e){
-            Log.e(TAG, "DMMMMM " + e.getMessage());
-            Toast.makeText(getApplicationContext(), "Cannot saveFile" + gameImgsFolder.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        }
-
-        Utils.getAllSubFilesAndFolders(gameImgsFolder);
-
+        initGame();
     }
 
     @Override
@@ -85,6 +47,17 @@ public class GamePlayActivity extends AppCompatActivity {
     public void onBackPressed(){
         // TODO: add confirm box here
         this.finish();
+    }
+
+    public void initGame(){
+        String gameResourceFolder = getIntent().getStringExtra(Constants.INTENT_GAME_RESOURCE_FOLDER);
+        if(gameResourceFolder == null){
+            Log.e(TAG, "initGame FALSEEEE ");
+            return;
+        }
+        File gamePiecesFolder = new File(getApplicationContext().getFilesDir(), gameResourceFolder);
+        Log.e(TAG, "DMM 000000 " + gamePiecesFolder.getAbsolutePath());
+        List<File> allFiles = Utils.getDirs(gamePiecesFolder, Utils.MODE_FILE_ONLY);
     }
 
 }
