@@ -16,8 +16,8 @@ public class Constants {
     public static final int DEFAULT_ROW_NUM_PIECES = 4;
     public static final String[] COLUMN_NUM_PIECES = {"3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
     public static final int DEFAULT_COLUMN_NUM_PIECES = 4;
-    public static final int COLUMN_OFFSET = 2;
-    public static final int ROW_OFFSET = 2;
+    public static final int COLUMN_OFFSET = 3;
+    public static final int ROW_OFFSET = 3;
 
     public static final String TMP_FILE_NAME = "cropped_tmp_file";
     public static final String TMP_FILE_MIME = ".jpg";

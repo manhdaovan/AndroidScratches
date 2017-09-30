@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        displaySavedGame();
+//        displaySavedGame();
     }
 
     @Override
@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displaySavedGame() {
+        // TODO: check all files. Re-render if files changed
+
         List<File> allFiles = Utils.getDirs(getApplicationContext().getFilesDir(), Utils.MODE_DIR_ONLY);
         List<String> allSavedImgs = new ArrayList<>();
 
@@ -87,9 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
         for (File file: allFiles){
             File savedImg = new File(file.getAbsolutePath(), Constants.defaultCroppedFileName());
-            for(File f: file.listFiles()){
-                allSavedImgs.add(f.getAbsolutePath());
-            }
             if(savedImg.exists()) allSavedImgs.add(savedImg.getAbsolutePath());
         }
 
